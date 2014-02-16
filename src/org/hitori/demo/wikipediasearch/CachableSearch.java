@@ -33,7 +33,16 @@ public class CachableSearch implements SearchResultsListener {
         // If the results for this search are cached, return them now
         final SoftReference<List<WikiPage>> cached = mCachedResults.get(term);
         if (cached != null && cached.get() != null) {
-            listener.onSearchResults(term, cached.get());
+            // Results found, so we'll return them
+            if (listener != null) {
+                listener.onSearchResults(term, cached.get());
+            }
+            
+            // Don't cancel any active search, but don't callback the results either
+            if (mActiveSearch) {
+                mSearchResultsListener = null;
+            }
+            mPendingListener = null;
         } else {
             /*
              * There is a design decision here both to simplify the interaction between the UI thread
@@ -83,7 +92,9 @@ public class CachableSearch implements SearchResultsListener {
         }
         
         // Pass along the results for the search we just completed
-        listener.onSearchResults(term, results);
+        if (listener != null) {
+            listener.onSearchResults(term, results);
+        }
     }
 
 }

@@ -82,15 +82,11 @@ public class SearchTask extends AsyncTask<Void, Void, List<WikiPage>> {
             final String key = keys.next();
             try {
                 final JSONObject page = pages.getJSONObject(key);
-                final String title = page.has("title") ? page.getString("title") : null;
-                final String fullurl = page.has("fullurl") ? page.getString("fullurl") : null;
-                String thumbnailUrl = null;
                 
-                if (page.has("thumbnail")) {
-                    final JSONObject thumbnailObj = page.getJSONObject("thumbnail");
-                    thumbnailUrl = (thumbnailObj != null && thumbnailObj.has("source")) ? thumbnailObj.getString("source") : null;
+                final WikiPage wikiPage = WikiPage.fromJson(page);
+                if (wikiPage != null) {
+                    pagesList.add(wikiPage);
                 }
-                pagesList.add(new WikiPage(Long.parseLong(key), title, fullurl, thumbnailUrl));
             } catch (final JSONException e) {
                 // Failed to parse that page but try our best to continue
                 Log.e(LOG_TAG, "Parse Exception", e);
