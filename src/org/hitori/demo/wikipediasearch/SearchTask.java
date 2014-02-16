@@ -29,6 +29,11 @@ public class SearchTask extends AsyncTask<Void, Void, List<WikiPage>> {
      * URI to the Wikipedia API (with default arguments set)
      */
     private static final String SEARCH_URI = "https://en.wikipedia.org/w/api.php?action=query&prop=pageimages%%7Cinfo&format=json&piprop=thumbnail&inprop=url&pilimit=50&generator=allpages&gaplimit=50&pithumbsize=96&gapprefix=%s";
+    
+    /*
+     * User-agent for our API requests
+     */
+    private static final String USER_AGENT = "WikipediaImageSearch/0.1 (https://github.com/niyafox/wpimgsearch; nicole AT hitori DOT org)";
 
     /*
      * Search string for this task
@@ -111,6 +116,7 @@ public class SearchTask extends AsyncTask<Void, Void, List<WikiPage>> {
 
         // Prepare a request object
         HttpGet httpget = new HttpGet(String.format(SEARCH_URI, mSearchTerm));
+        httpget.setHeader("User-Agent", USER_AGENT);
 
         // Execute the request
         HttpResponse response;
